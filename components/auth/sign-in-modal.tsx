@@ -23,7 +23,7 @@ function ValyuLogoWithText() {
         viewBox="0 0 24 24"
         fill="none"
         className="h-5 w-5"
-        stroke="white"
+        stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -72,9 +72,7 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
   return (
     <Dialog open={open} onClose={handleClose} className="max-w-md">
       <DialogHeader onClose={handleClose}>
-        <DialogTitle className="text-center text-xl">
-          Sign in with Valyu
-        </DialogTitle>
+        <DialogTitle className="text-center text-xl">Sign in</DialogTitle>
       </DialogHeader>
       <DialogContent className="space-y-6">
         <p className="text-center text-muted-foreground">
@@ -83,22 +81,13 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
           sources.
         </p>
 
-        {/* Free Credits Banner */}
-        <div className="rounded-xl border-2 border-green-200 bg-green-50 p-4 text-center dark:border-green-900 dark:bg-green-950/30">
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-xl">🎁</span>
-            <span className="text-lg font-semibold text-green-600 dark:text-green-400">
-              $10 Free Credits
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            New accounts get $10 in free search credits
-          </p>
-        </div>
+        <p className="text-center text-sm text-muted-foreground">
+          Free to use.
+        </p>
 
         {/* Error Message */}
         {error && (
-          <div className="rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-3 text-sm text-red-600 dark:text-red-400">
+          <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -107,7 +96,7 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
         <Button
           onClick={handleValyuSignIn}
           disabled={isLoading}
-          className="w-full h-12 bg-black hover:bg-gray-800 text-white rounded-lg"
+          className="w-full h-12"
         >
           {isLoading ? (
             <>
