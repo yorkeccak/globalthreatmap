@@ -17,7 +17,7 @@ export function PolymarketTicker({ category = "Politics" }: PolymarketTickerProp
   return (
     <div
       className={`fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border transition-all duration-300 ${
-        isCollapsed ? "h-10" : "h-64"
+        isCollapsed ? "h-10" : "h-20"
       }`}
     >
       {/* Header bar */}
