@@ -4,15 +4,15 @@ import { useState } from "react";
 import { ChevronUp, ChevronDown, TrendingUp } from "lucide-react";
 
 interface PolymarketTickerProps {
-  category?: "geopolitics" | "politics" | "breaking-news" | "crypto" | "sports" | "world";
+  category?: "Breaking News" | "Politics" | "Crypto" | "Sports" | "Technology" | "Finance & Earnings";
 }
 
-export function PolymarketTicker({ category = "geopolitics" }: PolymarketTickerProps) {
+export function PolymarketTicker({ category = "Politics" }: PolymarketTickerProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  // Polymarket ticker URL - direct category path
-  // Categories: geopolitics, politics, breaking-news, crypto, sports, world
-  const tickerUrl = `https://ticker.polymarket.com/${category}`;
+  // Polymarket ticker embed URL
+  // Categories: Breaking News, Politics, Crypto, Sports, Technology, Finance & Earnings
+  const tickerUrl = `https://ticker.polymarket.com/embed?category=${encodeURIComponent(category)}&theme=dark&speed=1&displayMode=classic&height=48`;
 
   return (
     <div

@@ -42,7 +42,7 @@ export default function Home() {
       </div>
       <WelcomeModal open={showWelcome} onOpenChange={setShowWelcome} />
       <SignInPanel />
-      <PolymarketTicker category="geopolitics" />
+      <PolymarketTicker category="Politics" />
     </div>
   );
 }
