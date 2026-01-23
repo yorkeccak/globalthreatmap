@@ -33,7 +33,8 @@ export async function GET(request: Request) {
     const eventsWithLocations = await Promise.all(
       allResults.map(async (result) => {
         const locations = await geocodeLocationsFromText(
-          `${result.title} ${result.content}`
+          `${result.title} ${result.content}`,
+          result.title
         );
 
         const location = locations[0] || {
@@ -110,7 +111,8 @@ export async function POST(request: Request) {
     const eventsWithLocations = await Promise.all(
       allResults.map(async (result) => {
         const locations = await geocodeLocationsFromText(
-          `${result.title} ${result.content}`
+          `${result.title} ${result.content}`,
+          result.title
         );
 
         const location = locations[0] || {
