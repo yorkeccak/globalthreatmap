@@ -19,7 +19,7 @@ export function EventPopup({ event }: EventPopupProps) {
             href={event.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-white hover:underline"
+            className="flex items-center gap-1 text-foreground hover:underline"
           >
             {event.title}
           </a>
