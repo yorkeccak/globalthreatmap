@@ -30,7 +30,7 @@ export function useEvents(options: UseEventsOptions = {}) {
     setError,
   } = useEventsStore();
 
-  const { getAccessToken, signOut, isAuthenticated } = useAuthStore();
+  const { getAccessToken, isAuthenticated } = useAuthStore();
   const [requiresSignIn, setRequiresSignIn] = useState(false);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -60,11 +60,10 @@ export function useEvents(options: UseEventsOptions = {}) {
 
       const data = await response.json();
 
-      // Handle auth errors
+      // Handle auth errors - don't immediately sign out, just prompt re-auth
       if (response.status === 401 || data.requiresReauth) {
-        signOut();
         setRequiresSignIn(true);
-        setError("Session expired. Please sign in again.");
+        setError("Please sign in to view events.");
         return;
       }
 
@@ -79,7 +78,7 @@ export function useEvents(options: UseEventsOptions = {}) {
     } finally {
       setLoading(false);
     }
-  }, [queries, setEvents, setLoading, setError, getAccessToken, signOut, requiresAuth, isAuthenticated]);
+  }, [queries, setEvents, setLoading, setError, getAccessToken, requiresAuth, isAuthenticated]);
 
   // Manual refresh
   const refresh = useCallback(() => {
