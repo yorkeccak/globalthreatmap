@@ -9,8 +9,7 @@ A real-time global situational awareness platform that plots security events, ge
 ![](https://4ealzrotsszllxtz.public.blob.vercel-storage.com/hezbolla_research)
 
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/Klarxi?referralCode=yuv1Gy&utm_medium=integration&utm_source=template&utm_campaign=generic)
-
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/open-source-intelligence-command-center?referralCode=yuv1Gy&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
 
 ## Features
