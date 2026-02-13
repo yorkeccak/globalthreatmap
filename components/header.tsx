@@ -40,7 +40,7 @@ export function Header({ onRefresh, isLoading, onShowHelp }: HeaderProps) {
       <div className="absolute left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
         Powered by{" "}
         <a
-          href="https://www.valyu.ai/search-api"
+          href="https://www.valyu.ai"
           target="_blank"
           rel="noopener noreferrer"
           className="font-bold text-white hover:underline"

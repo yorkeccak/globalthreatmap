@@ -97,9 +97,32 @@ export function WelcomeModal({ open, onOpenChange }: WelcomeModalProps) {
       </DialogHeader>
 
       <DialogContent className="max-h-[60vh]">
-        <p className="mb-6 text-muted-foreground">
+        <p className="mb-4 text-muted-foreground">
           Your situational awareness platform for tracking global
           security events, wars, conflicts & threat indicators.
+        </p>
+        <p className="mb-6 text-sm text-muted-foreground">
+          Powered by{" "}
+          <a
+            href="https://www.valyu.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary hover:underline"
+          >
+            Valyu
+          </a>
+          {" "}- a search API for AIs, providing search tools and agents
+          (like{" "}
+          <a
+            href="https://docs.valyu.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary hover:underline"
+          >
+            DeepResearch
+          </a>
+          ) with access to web and specialised proprietary data sources.
+          Valyu powers the search and deep research behind this app.
         </p>
 
         <div className="grid gap-4 sm:grid-cols-2">

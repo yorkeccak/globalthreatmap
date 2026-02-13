@@ -80,7 +80,7 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
         </p>
 
         <p className="text-center text-sm text-muted-foreground">
-          Valyu is the intelligence layer of GTM. It gives access to real-time web search, financial, academic, medical research and proprietary data sources.
+          Valyu powers the search and deep research for this app, providing access to real-time web, financial, academic, medical and proprietary data sources.
         </p>
 
         {/* Error Message */}
