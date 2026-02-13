@@ -24,7 +24,17 @@ const THREAT_QUERIES = [
   "infrastructure dam power grid failure",
   "food shortage commodity crisis",
   "missile strike airstrike bombing",
+  "military deployment troops mobilization",
+  "arms deal weapons shipment defense",
+  "coup election interference political crisis",
+  "nuclear threat ballistic missile test",
 ];
+
+function getStartDate(): string {
+  const date = new Date();
+  date.setDate(date.getDate() - 7);
+  return date.toISOString().split("T")[0];
+}
 
 // Clean boilerplate from content
 function cleanContent(text: string): string {
@@ -178,9 +188,10 @@ export async function GET(request: Request) {
   try {
     const searchQueries = query ? [query] : THREAT_QUERIES;
     const tokenToUse = selfHosted ? undefined : accessToken;
+    const startDate = getStartDate();
 
     const searchResultsArrays = await Promise.all(
-      searchQueries.map((q) => searchEvents(q, { maxResults: 20, accessToken: tokenToUse || undefined }))
+      searchQueries.map((q) => searchEvents(q, { maxResults: 20, accessToken: tokenToUse || undefined, startDate }))
     );
 
     const requiresReauth = searchResultsArrays.some((r) => r.requiresReauth);
@@ -236,10 +247,11 @@ export async function POST(request: Request) {
     const searchQueries = queries && Array.isArray(queries) && queries.length > 0
       ? queries.slice(0, 12)
       : THREAT_QUERIES;
+    const startDate = getStartDate();
 
     const searchResultsArrays = await Promise.all(
       searchQueries.map((query: string) =>
-        searchEvents(query, { maxResults: 20, accessToken: tokenToUse })
+        searchEvents(query, { maxResults: 20, accessToken: tokenToUse, startDate })
       )
     );
 

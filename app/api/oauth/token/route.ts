@@ -16,19 +16,23 @@ export async function POST(request: NextRequest) {
     }
 
     // Exchange authorization code for access token
+    // Client is registered for client_secret_basic auth method
+    const basicAuth = Buffer.from(
+      `${process.env.NEXT_PUBLIC_VALYU_CLIENT_ID}:${process.env.VALYU_CLIENT_SECRET}`
+    ).toString("base64");
+
     const tokenResponse = await fetch(
       `${process.env.NEXT_PUBLIC_VALYU_AUTH_URL}/auth/v1/oauth/token`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${basicAuth}`,
         },
         body: new URLSearchParams({
           grant_type: "authorization_code",
           code,
           redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI!,
-          client_id: process.env.NEXT_PUBLIC_VALYU_CLIENT_ID!,
-          client_secret: process.env.VALYU_CLIENT_SECRET!,
           code_verifier: codeVerifier,
         }),
       }

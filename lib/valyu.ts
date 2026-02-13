@@ -113,8 +113,8 @@ function parsePublishedDate(dateValue: unknown): string | undefined {
 
 interface SearchOptions {
   maxResults?: number;
-  freshness?: "day" | "week" | "month";
   accessToken?: string;
+  startDate?: string;
 }
 
 export async function searchEvents(
@@ -131,11 +131,15 @@ export async function searchEvents(
   requiresReauth?: boolean;
   requiresCredits?: boolean;
 }> {
-  const searchBody = {
+  const searchBody: Record<string, any> = {
     query,
     searchType: "news",
     maxNumResults: options?.maxResults || 20,
   };
+
+  if (options?.startDate) {
+    searchBody.start_date = options.startDate;
+  }
 
   if (options?.accessToken) {
     const proxyResult = await callViaProxy("/v1/search", searchBody, options.accessToken);
@@ -174,6 +178,7 @@ export async function searchEvents(
     const response = await valyu.search(query, {
       searchType: "news",
       maxNumResults: options?.maxResults || 20,
+      ...(options?.startDate && { startDate: options.startDate }),
     });
 
     if (!response.results) {
