@@ -79,8 +79,36 @@ async function callViaProxy(
       }
     }
 
-    const data = await response.json();
-    return { success: true, data };
+    const text = await response.text();
+
+    // Handle SSE-formatted responses from the proxy
+    if (text.startsWith("data: ")) {
+      const lines = text.split("\n").filter((l) => l.startsWith("data: "));
+      let contents = "";
+      let searchResults: Array<{ title?: string; url?: string }> = [];
+      for (const line of lines) {
+        try {
+          const parsed = JSON.parse(line.slice(6));
+          if (parsed.search_results) {
+            searchResults = parsed.search_results;
+          }
+          const delta = parsed.choices?.[0]?.delta?.content;
+          if (delta) {
+            contents += delta;
+          }
+        } catch {
+          // skip unparseable chunks (e.g. [DONE])
+        }
+      }
+      return { success: true, data: { contents: contents || undefined, search_results: searchResults.length > 0 ? searchResults : undefined } };
+    }
+
+    try {
+      const data = JSON.parse(text);
+      return { success: true, data };
+    } catch {
+      return { success: false, error: `Invalid JSON response: ${text.substring(0, 200)}` };
+    }
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }

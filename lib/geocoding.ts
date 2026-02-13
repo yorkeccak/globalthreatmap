@@ -131,6 +131,9 @@ const LOCATION_PATTERNS = [
   /\bthe\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)\s+(?:government|president|prime\s+minister|administration|military|army)\b/gi,
 ];
 
+// In-memory cache for geocoding results (avoids repeated Mapbox API calls)
+const geocodeCache = new Map<string, GeoLocation | null>();
+
 // Extended known locations with more cities and regions
 const KNOWN_LOCATIONS: Record<
   string,
@@ -369,25 +372,22 @@ async function extractLocationWithAI(
 }
 
 /**
- * Geocode a location name to coordinates
+ * Look up a place name in KNOWN_LOCATIONS (case-insensitive)
  */
-export async function geocodeLocation(
-  placeName: string
-): Promise<GeoLocation | null> {
-  // Check known locations first (instant, no API call)
-  const knownLocation = KNOWN_LOCATIONS[placeName];
-  if (knownLocation) {
+function lookupKnownLocation(name: string): GeoLocation | null {
+  const trimmed = name.trim();
+  const direct = KNOWN_LOCATIONS[trimmed];
+  if (direct) {
     return {
-      latitude: knownLocation.lat,
-      longitude: knownLocation.lng,
-      placeName,
-      country: knownLocation.country,
+      latitude: direct.lat,
+      longitude: direct.lng,
+      placeName: trimmed,
+      country: direct.country,
     };
   }
 
-  // Try case-insensitive lookup
   const knownKey = Object.keys(KNOWN_LOCATIONS).find(
-    (key) => key.toLowerCase() === placeName.toLowerCase()
+    (key) => key.toLowerCase() === trimmed.toLowerCase()
   );
   if (knownKey) {
     const loc = KNOWN_LOCATIONS[knownKey];
@@ -399,9 +399,47 @@ export async function geocodeLocation(
     };
   }
 
+  return null;
+}
+
+/**
+ * Geocode a location name to coordinates.
+ * Handles compound queries like "Kyiv, Kyiv Oblast, Ukraine" by trying each
+ * comma-separated component against KNOWN_LOCATIONS before hitting Mapbox.
+ * Results are cached in-memory to avoid duplicate API calls.
+ */
+export async function geocodeLocation(
+  placeName: string
+): Promise<GeoLocation | null> {
+  // Check cache first
+  if (geocodeCache.has(placeName)) {
+    return geocodeCache.get(placeName)!;
+  }
+
+  // Try exact match against known locations
+  const exactMatch = lookupKnownLocation(placeName);
+  if (exactMatch) {
+    geocodeCache.set(placeName, exactMatch);
+    return exactMatch;
+  }
+
+  // For compound queries like "Kyiv, Kyiv Oblast, Ukraine",
+  // try each component against known locations (most specific first)
+  if (placeName.includes(",")) {
+    const parts = placeName.split(",").map((p) => p.trim());
+    for (const part of parts) {
+      const match = lookupKnownLocation(part);
+      if (match) {
+        geocodeCache.set(placeName, match);
+        return match;
+      }
+    }
+  }
+
   // Fall back to Mapbox geocoding
   if (!MAPBOX_TOKEN) {
     console.warn("Mapbox token not available for geocoding");
+    geocodeCache.set(placeName, null);
     return null;
   }
 
@@ -435,15 +473,18 @@ export async function geocodeLocation(
         country = feature.text;
       }
 
-      return {
+      const result: GeoLocation = {
         latitude,
         longitude,
         placeName: feature.text || placeName,
         country,
         region: feature.region,
       };
+      geocodeCache.set(placeName, result);
+      return result;
     }
 
+    geocodeCache.set(placeName, null);
     return null;
   } catch (error) {
     console.error("Geocoding error:", error);
